@@ -1,0 +1,9 @@
+# 本软件的依赖库。在项目文件夹里运行下面这行一次即可：
+#     pip install -r requirements.txt
+#
+# （说明：核心界面用 Python 自带的 Tkinter，无需安装；下面是各功能用到的库）
+
+pyserial>=3.5      # 串口通信（测试平台/阻值仪原设备）
+Pillow>=10.0       # 图片显示（点位图 JPG/PNG）
+pyodbc>=5.0        # 读取厂商 Access(.accdb) 数据库，用于导入历史数据
+bleak>=0.22        # 蓝牙 BLE，用于连接 Fluke Connect 万用表
