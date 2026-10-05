@@ -4,6 +4,7 @@
 用法：
     python tools/inspect_accdb.py  H:\\阻值仪\\SJB\\Database1.accdb
 """
+
 from __future__ import annotations
 
 import os

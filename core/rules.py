@@ -6,6 +6,7 @@
   - 阻值 ~3200 左右 → 明显是万用表的"开路/OL"读数，实测也应是开路
   - 其它           → 按容差百分比比较
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -25,8 +26,8 @@ NO_REF = "NOREF"
 
 @dataclass
 class Judge:
-    result: str      # PASS / FAIL / NOREF
-    message: str     # 给人看的一句话
+    result: str  # PASS / FAIL / NOREF
+    message: str  # 给人看的一句话
     detail: str = ""
 
 
@@ -36,8 +37,7 @@ def fmt_ohm(value: Optional[int]) -> str:
     return f"{value} Ω"
 
 
-def judge(reference: Optional[int], measured: Optional[int],
-          tol_percent: int = 30) -> Judge:
+def judge(reference: Optional[int], measured: Optional[int], tol_percent: int = 30) -> Judge:
     """对比参考阻值与实测阻值。"""
     if measured is None:
         return Judge(NO_REF, "尚未测得数值")
@@ -66,5 +66,5 @@ def judge(reference: Optional[int], measured: Optional[int],
         FAIL,
         f"实测 {measured} Ω，参考 {reference} Ω（允许 {low:.0f}~{high:.0f}）",
         detail=f"偏 {'高' if measured > high else '低'} "
-               f"{abs(measured - reference) / max(reference, 1) * 100:.0f}%",
+        f"{abs(measured - reference) / max(reference, 1) * 100:.0f}%",
     )

@@ -4,6 +4,7 @@
 要新增一个测试项，只写一个类继承 TestItem，然后实现 run() 方法即可。
 框架会自动发现它，并出现在界面列表里。
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -14,11 +15,11 @@ from typing import Any, Callable, Optional
 class Status(str, Enum):
     """测试结果状态。"""
 
-    PASS = "PASS"      # 合格
-    FAIL = "FAIL"      # 不合格
-    SKIP = "SKIP"      # 跳过
-    ERROR = "ERROR"    # 执行出错（例如设备没连上、参数不对）
-    INFO = "INFO"      # 仅提示，不做合格判定
+    PASS = "PASS"  # 合格
+    FAIL = "FAIL"  # 不合格
+    SKIP = "SKIP"  # 跳过
+    ERROR = "ERROR"  # 执行出错（例如设备没连上、参数不对）
+    INFO = "INFO"  # 仅提示，不做合格判定
 
 
 @dataclass
@@ -26,9 +27,9 @@ class TestResult:
     """一个测试项跑完后返回的结果。"""
 
     status: Status
-    message: str = ""          # 一行说明，会显示在结果表里
-    value: Any = None          # 实测值（可选），会写入报告
-    detail: str = ""           # 详细内容（可选），例如异常堆栈
+    message: str = ""  # 一行说明，会显示在结果表里
+    value: Any = None  # 实测值（可选），会写入报告
+    detail: str = ""  # 详细内容（可选），例如异常堆栈
 
 
 @dataclass

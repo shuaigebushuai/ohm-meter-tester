@@ -18,6 +18,7 @@
 
   显示值 = (符号) 尾数 / 10^小数位 ，再乘以数量级前缀的单位。
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -31,9 +32,9 @@ def u16(slot: int) -> str:
 
 
 # 服务/特征
-SERVICE_READING = u16(0x1800)      # 读取
-CHAR_ASCII = u16(0x2901)           # 文本显示
-CHAR_BINARY = u16(0x290F)          # 二进制读数
+SERVICE_READING = u16(0x1800)  # 读取
+CHAR_ASCII = u16(0x2901)  # 文本显示
+CHAR_BINARY = u16(0x290F)  # 二进制读数
 SERVICE_CONNECTION = u16(0x1801)
 SERVICE_UNDOC = u16(0x1805)
 
@@ -48,32 +49,100 @@ CHAR_MFG = "00002a29-0000-1000-8000-00805f9b34fb"
 MAGNITUDES = {0: "", 1: "G", 2: "M", 3: "k", 4: "m", 5: "u", 6: "n", 7: "p"}
 
 STATES = {
-    0: "正常", 1: "空白", 2: "未激活", 3: "无效", 4: "超量程(OL)",
-    5: "AD过载", 6: "热电偶开路", 7: "放电", 8: "表笔", 9: "大于",
-    10: "缺相", 11: "错误", 12: "小于", 13: "空",
+    0: "正常",
+    1: "空白",
+    2: "未激活",
+    3: "无效",
+    4: "超量程(OL)",
+    5: "AD过载",
+    6: "热电偶开路",
+    7: "放电",
+    8: "表笔",
+    9: "大于",
+    10: "缺相",
+    11: "错误",
+    12: "小于",
+    13: "空",
 }
 
 UNITS = {
-    0: "", 1: "V AC", 2: "V DC", 3: "A AC", 4: "A DC", 5: "Hz", 6: "%RH",
-    7: "°C", 8: "°F", 9: "°R", 10: "K", 11: "Ω", 12: "S", 13: "占空%",
-    14: "s", 15: "F", 16: "dB", 17: "dBm", 18: "W", 19: "J", 20: "H",
-    22: "psi", 28: "bar", 29: "Pa", 33: "V AC+DC", 34: "A AC+DC",
-    35: "%", 36: "V/Hz", 37: "g", 44: "TΩ",
+    0: "",
+    1: "V AC",
+    2: "V DC",
+    3: "A AC",
+    4: "A DC",
+    5: "Hz",
+    6: "%RH",
+    7: "°C",
+    8: "°F",
+    9: "°R",
+    10: "K",
+    11: "Ω",
+    12: "S",
+    13: "占空%",
+    14: "s",
+    15: "F",
+    16: "dB",
+    17: "dBm",
+    18: "W",
+    19: "J",
+    20: "H",
+    22: "psi",
+    28: "bar",
+    29: "Pa",
+    33: "V AC+DC",
+    34: "A AC+DC",
+    35: "%",
+    36: "V/Hz",
+    37: "g",
+    44: "TΩ",
 }
 
 FUNCTIONS = {
-    0: "", 1: "mV AC", 2: "V AC", 3: "V AC+DC", 7: "V AC LoZ",
-    8: "mV AC 低通", 9: "V AC 低通", 10: "uV DC", 11: "mV DC", 12: "V DC",
-    13: "mA AC", 14: "A AC", 15: "A AC+DC", 19: "uA DC", 20: "mA DC",
-    21: "A DC", 34: "温度", 35: "°F", 36: "°C", 37: "°R", 38: "K",
-    39: "通断", 40: "电阻", 41: "电导", 42: "低阻", 43: "相位",
-    44: "A AC 浪涌", 45: "电容", 46: "二极管", 47: "V/Hz",
+    0: "",
+    1: "mV AC",
+    2: "V AC",
+    3: "V AC+DC",
+    7: "V AC LoZ",
+    8: "mV AC 低通",
+    9: "V AC 低通",
+    10: "uV DC",
+    11: "mV DC",
+    12: "V DC",
+    13: "mA AC",
+    14: "A AC",
+    15: "A AC+DC",
+    19: "uA DC",
+    20: "mA DC",
+    21: "A DC",
+    34: "温度",
+    35: "°F",
+    36: "°C",
+    37: "°R",
+    38: "K",
+    39: "通断",
+    40: "电阻",
+    41: "电导",
+    42: "低阻",
+    43: "相位",
+    44: "A AC 浪涌",
+    45: "电容",
+    46: "二极管",
+    47: "V/Hz",
     50: "uA AC",
 }
 
 ATTRIBUTES = {
-    0: "", 1: "开路", 2: "短路", 3: "毛刺", 4: "二极管好",
-    5: "下降沿", 6: "上升沿", 7: "大电流", 8: "危险电压", 9: "低阻",
+    0: "",
+    1: "开路",
+    2: "短路",
+    3: "毛刺",
+    4: "二极管好",
+    5: "下降沿",
+    6: "上升沿",
+    7: "大电流",
+    8: "危险电压",
+    9: "低阻",
 }
 
 NO_VALUE_MASK = 0x1FFFFF
@@ -81,8 +150,8 @@ NO_VALUE_MASK = 0x1FFFFF
 
 @dataclass
 class Reading:
-    value: Optional[float]     # 数值
-    text: str                  # 显示文本，如 "5.000 Ω"
+    value: Optional[float]  # 数值
+    text: str  # 显示文本，如 "5.000 Ω"
     unit: str = ""
     function: str = ""
     state: str = ""
@@ -114,15 +183,22 @@ def decode_binary(data: bytes) -> Optional[Reading]:
     attr_text = ATTRIBUTES.get(attribute, "")
 
     if mantissa == NO_VALUE_MASK or state in (3, 4, 5, 11, 13):
-        return Reading(None, "OL" if state == 4 else state_text,
-                       unit, func, state_text, attr_text, bool(sign), bytes(data))
+        return Reading(
+            None,
+            "OL" if state == 4 else state_text,
+            unit,
+            func,
+            state_text,
+            attr_text,
+            bool(sign),
+            bytes(data),
+        )
 
-    value = mantissa / (10 ** decimals)
+    value = mantissa / (10**decimals)
     if sign:
         value = -value
     text = f"{value:.{decimals}f} {MAGNITUDES.get(magnitude, '')}{unit}".strip()
-    return Reading(value, text, unit, func, state_text, attr_text,
-                   bool(sign), bytes(data))
+    return Reading(value, text, unit, func, state_text, attr_text, bool(sign), bytes(data))
 
 
 def decode_ascii(data: bytes) -> Optional[Reading]:
@@ -186,20 +262,24 @@ class FlukeClient:
         def cb(device, adv) -> None:
             name = adv.local_name or device.name or ""
             uuids = [u.lower() for u in (adv.service_uuids or [])]
-            is_fluke = target in uuids or "fluke" in name.lower() \
-                or name.strip().upper().endswith("FC") or "3000" in name
+            is_fluke = (
+                target in uuids
+                or "fluke" in name.lower()
+                or name.strip().upper().endswith("FC")
+                or "3000" in name
+            )
             if is_fluke:
                 found[device.address] = (device.address, name, adv.rssi)
 
         scanner = BleakScanner(detection_callback=cb)
         await scanner.start()
         import asyncio
+
         await asyncio.sleep(timeout)
         await scanner.stop()
         return sorted(found.values(), key=lambda x: -x[2])
 
-    async def connect(self, address: str, on_reading=None,
-                      on_log=None) -> None:
+    async def connect(self, address: str, on_reading=None, on_log=None) -> None:
         """连接并订阅读数。on_reading(Reading) 会被反复调用。"""
         from bleak import BleakClient
 
@@ -213,9 +293,13 @@ class FlukeClient:
         log(f"已连接 {address}")
 
         # 读设备信息
-        for label, cuuid in [("型号", CHAR_MODEL), ("序列号", CHAR_SERIAL),
-                             ("固件", CHAR_FW), ("软件", CHAR_SW),
-                             ("厂商", CHAR_MFG)]:
+        for label, cuuid in [
+            ("型号", CHAR_MODEL),
+            ("序列号", CHAR_SERIAL),
+            ("固件", CHAR_FW),
+            ("软件", CHAR_SW),
+            ("厂商", CHAR_MFG),
+        ]:
             try:
                 raw = await self.client.read_gatt_char(cuuid)
                 log(f"  {label}: {raw.decode('utf-8', 'replace').strip(chr(0)).strip()}")
@@ -234,6 +318,7 @@ class FlukeClient:
                 rd = decode(bytes(data))
                 if rd and on_reading:
                     on_reading(rd)
+
             return _cb
 
         subscribed = False

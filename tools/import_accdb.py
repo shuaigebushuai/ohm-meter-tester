@@ -7,6 +7,7 @@
 
 需要环境变量 ACCDB_PWD（Access 打开密码）。
 """
+
 from __future__ import annotations
 
 import os
@@ -48,14 +49,20 @@ def read_rows(path: str) -> list[tuple]:
     cur.execute("SELECT 序号,阻值,具体型号,芯片方位,a,b,c,d,e,f FROM Database1")
     out: list[tuple] = []
     for r in cur.fetchall():
-        out.append((
-            r[2],          # model 具体型号
-            r[0],          # seq   序号
-            r[1],          # resistance 阻值
-            r[3],          # orientation 芯片方位
-            r[4], r[5], r[6], r[7],   # x1,y1,x2,y2 = a,b,c,d
-            r[8], r[9],    # flag_e, flag_f
-        ))
+        out.append(
+            (
+                r[2],  # model 具体型号
+                r[0],  # seq   序号
+                r[1],  # resistance 阻值
+                r[3],  # orientation 芯片方位
+                r[4],
+                r[5],
+                r[6],
+                r[7],  # x1,y1,x2,y2 = a,b,c,d
+                r[8],
+                r[9],  # flag_e, flag_f
+            )
+        )
     conn.close()
     return out
 

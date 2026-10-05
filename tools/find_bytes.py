@@ -4,6 +4,7 @@
 用法：python tools/find_bytes.py <文件> 关键字1 关键字2 ...
 每个关键字会分别用 UTF-16LE / GBK / ASCII 三种编码去匹配并计数。
 """
+
 from __future__ import annotations
 
 import sys

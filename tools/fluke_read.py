@@ -7,6 +7,7 @@
 
 按 Ctrl+C 退出。
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -20,8 +21,10 @@ from core.fluke import FlukeClient, Reading  # noqa: E402
 
 def show(rd: Reading) -> None:
     val = "—" if rd.value is None else f"{rd.value}"
-    print(f"  读数: {rd.text:<20} 数值={val:<12} 功能={rd.function:<8} "
-          f"状态={rd.state} {('(' + rd.attribute + ')') if rd.attribute else ''}")
+    print(
+        f"  读数: {rd.text:<20} 数值={val:<12} 功能={rd.function:<8} "
+        f"状态={rd.state} {('(' + rd.attribute + ')') if rd.attribute else ''}"
+    )
 
 
 async def main() -> None:

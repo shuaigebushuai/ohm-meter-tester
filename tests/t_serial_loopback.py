@@ -7,6 +7,7 @@
 需要安装串口库 pyserial（命令：pip install pyserial）。
 如果没装，这一项会显示 ERROR 提示，不影响其它测试项。
 """
+
 from __future__ import annotations
 
 from core.base import Status, TestContext, TestItem, TestResult

@@ -3,6 +3,7 @@
 
 用法：python tools/gh_get.py <owner/repo> <路径1> [路径2 ...]
 """
+
 from __future__ import annotations
 
 import sys

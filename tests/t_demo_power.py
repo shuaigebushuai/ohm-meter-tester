@@ -5,6 +5,7 @@
 真正使用时，只要把 _read_voltage() 换成你实际设备的读数即可
 （例如换成万用表、采集卡、USB 采集模块读取的值）。
 """
+
 from __future__ import annotations
 
 import random

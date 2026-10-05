@@ -3,6 +3,7 @@
 
 用法：python tools/try_open.py <文件路径> [...]
 """
+
 from __future__ import annotations
 
 import sys
@@ -32,8 +33,11 @@ def main() -> None:
             try:
                 conn = pyodbc.connect(conn_str, autocommit=True)
                 cur = conn.cursor()
-                tables = [r.table_name for r in cur.tables(tableType="TABLE")
-                          if not r.table_name.startswith("MSys")]
+                tables = [
+                    r.table_name
+                    for r in cur.tables(tableType="TABLE")
+                    if not r.table_name.startswith("MSys")
+                ]
                 print(f"  [{label}] 成功！表: {sorted(tables)}")
                 conn.close()
             except Exception as exc:  # noqa: BLE001

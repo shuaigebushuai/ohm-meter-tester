@@ -3,17 +3,43 @@
 
 用法：python tools/scan_strings.py <文件> [关键字1 关键字2 ...]
 """
+
 from __future__ import annotations
 
 import re
 import sys
 
 DEFAULT_KW = [
-    "oledb", "pwd", "password", "provider", "accdb", "jet", "dsn",
-    "driver=", "database", "mscomm", "openport", "commport", "comport",
-    "baud", "resist", "ohm", "select ", "insert into", "update ",
-    "data source", "initial", "serial", "SJB", "DataSource",
-    "SetOutput", "SetInput", "Settings", "COM1", "COM2", "COM3",
+    "oledb",
+    "pwd",
+    "password",
+    "provider",
+    "accdb",
+    "jet",
+    "dsn",
+    "driver=",
+    "database",
+    "mscomm",
+    "openport",
+    "commport",
+    "comport",
+    "baud",
+    "resist",
+    "ohm",
+    "select ",
+    "insert into",
+    "update ",
+    "data source",
+    "initial",
+    "serial",
+    "SJB",
+    "DataSource",
+    "SetOutput",
+    "SetInput",
+    "Settings",
+    "COM1",
+    "COM2",
+    "COM3",
 ]
 
 

@@ -6,6 +6,7 @@
 
 使用前请把万用表开机，并打开它的"无线/Fluke Connect"（屏幕出现无线图标）。
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -14,7 +15,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from core.fluke import SERVICE_READING, FlukeClient  # noqa: E402
+from core.fluke import SERVICE_READING  # noqa: E402
 
 
 async def main() -> None:
@@ -41,10 +42,9 @@ async def main() -> None:
         name = adv.local_name or dev.name or ""
         uuids = [u.lower() for u in (adv.service_uuids or [])]
         rssi = adv.rssi
-        hit = target in uuids or "fluke" in name.lower() or \
-            name.strip().upper().endswith("FC")
+        hit = target in uuids or "fluke" in name.lower() or name.strip().upper().endswith("FC")
         mark = "   <===== 疑似 Fluke" if hit else ""
-        print(f"  {addr}  信号={rssi:>4}  名称={name!r}")
+        print(f"  {addr}  信号={rssi:>4}  名称={name!r}{mark}")
         if uuids:
             print(f"        服务: {uuids}")
         if hit:

@@ -5,6 +5,7 @@
   - Python 自带，不用装任何东西（原版要装 Access 数据库引擎）
   - 单文件，备份方便，不会像 OCX 那样需要注册
 """
+
 from __future__ import annotations
 
 import sqlite3
@@ -65,11 +66,11 @@ def list_sources(conn: sqlite3.Connection) -> list[str]:
     return [r["source"] for r in rows]
 
 
-def list_models(conn: sqlite3.Connection, source: Optional[str] = None,
-                keyword: str = "") -> list[dict]:
+def list_models(
+    conn: sqlite3.Connection, source: Optional[str] = None, keyword: str = ""
+) -> list[dict]:
     """列出型号及各自脚位数。keyword 用于搜索过滤。"""
-    sql = ("SELECT source, model, COUNT(*) AS cnt, SUM(resistance) AS total "
-           "FROM pads WHERE 1=1")
+    sql = "SELECT source, model, COUNT(*) AS cnt, SUM(resistance) AS total FROM pads WHERE 1=1"
     args: list = []
     if source:
         sql += " AND source = ?"
@@ -108,8 +109,9 @@ def get_pads(conn: sqlite3.Connection, source: Optional[str], model: str) -> lis
     return [best[k] for k in sorted(best)]
 
 
-def find_reference(conn: sqlite3.Connection, model: str, seq: int,
-                   source: Optional[str] = None) -> Optional[dict]:
+def find_reference(
+    conn: sqlite3.Connection, model: str, seq: int, source: Optional[str] = None
+) -> Optional[dict]:
     """查找某个脚位的参考阻值（可在多个来源之间兜底）。"""
     if source:
         row = conn.execute(
@@ -127,16 +129,32 @@ def find_reference(conn: sqlite3.Connection, model: str, seq: int,
     return dict(row) if row else None
 
 
-def save_measurement(conn: sqlite3.Connection, *, source: str, model: str,
-                     seq: int, reference: Optional[int], measured: Optional[int],
-                     result: str, note: str = "") -> int:
+def save_measurement(
+    conn: sqlite3.Connection,
+    *,
+    source: str,
+    model: str,
+    seq: int,
+    reference: Optional[int],
+    measured: Optional[int],
+    result: str,
+    note: str = "",
+) -> int:
     """保存一条测量记录。"""
     cur = conn.execute(
         "INSERT INTO measurements "
         "(time, source, model, seq, reference, measured, result, note) "
         "VALUES (?,?,?,?,?,?,?,?)",
-        (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), source, model, seq,
-         reference, measured, result, note),
+        (
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            source,
+            model,
+            seq,
+            reference,
+            measured,
+            result,
+            note,
+        ),
     )
     conn.commit()
     return cur.lastrowid or 0

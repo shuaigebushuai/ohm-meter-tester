@@ -9,17 +9,18 @@
   5. 绿色=合格，红色=标红可疑，灰色=没有参考数据
   6. 全部测完点「保存记录」或「导出CSV」
 """
+
 from __future__ import annotations
 
 import csv
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
-from typing import Optional
 
 from core import db, rules
 
 try:
     from PIL import Image, ImageTk
+
     HAS_PIL = True
 except Exception:  # noqa: BLE001
     HAS_PIL = False
@@ -90,7 +91,9 @@ class OhmmeterApp(tk.Tk):
 
         ttk.Button(bar, text="打开点位图", command=self._open_image).pack(side="left", padx=(10, 0))
         ttk.Button(bar, text="适应窗口", command=lambda: self._fit()).pack(side="left", padx=(4, 0))
-        ttk.Button(bar, text="放大", command=lambda: self._zoom(1.25)).pack(side="left", padx=(4, 0))
+        ttk.Button(bar, text="放大", command=lambda: self._zoom(1.25)).pack(
+            side="left", padx=(4, 0)
+        )
         ttk.Button(bar, text="缩小", command=lambda: self._zoom(0.8)).pack(side="left", padx=(4, 0))
 
         # ---- 中间：左图右信息 ----
@@ -102,8 +105,7 @@ class OhmmeterApp(tk.Tk):
         paned.add(left, weight=3)
         cf = ttk.Frame(left)
         cf.pack(fill="both", expand=True)
-        self.canvas = tk.Canvas(cf, bg="#1e222b", highlightthickness=0,
-                                cursor="hand2")
+        self.canvas = tk.Canvas(cf, bg="#1e222b", highlightthickness=0, cursor="hand2")
         vsb = ttk.Scrollbar(cf, orient="vertical", command=self.canvas.yview)
         hsb = ttk.Scrollbar(cf, orient="horizontal", command=self.canvas.xview)
         self.canvas.configure(yscrollcommand=vsb.set, xscrollcommand=hsb.set)
@@ -118,11 +120,14 @@ class OhmmeterApp(tk.Tk):
 
         legend = ttk.Frame(left)
         legend.pack(fill="x", pady=(4, 0))
-        for text, color in [("当前", COL_CURRENT), ("合格", COL_OK),
-                            ("标红", COL_FAIL), ("无参考", COL_NOREF),
-                            ("待测", COL_NORMAL)]:
-            lb = tk.Canvas(legend, width=16, height=16, bg="white",
-                           highlightthickness=0)
+        for text, color in [
+            ("当前", COL_CURRENT),
+            ("合格", COL_OK),
+            ("标红", COL_FAIL),
+            ("无参考", COL_NOREF),
+            ("待测", COL_NORMAL),
+        ]:
+            lb = tk.Canvas(legend, width=16, height=16, bg="white", highlightthickness=0)
             lb.create_rectangle(0, 0, 15, 15, fill=color, outline="#333")
             lb.pack(side="left", padx=(0, 3))
             ttk.Label(legend, text=text).pack(side="left", padx=(0, 10))
@@ -137,13 +142,15 @@ class OhmmeterApp(tk.Tk):
         self.lbl_seq = ttk.Label(info, text="—", font=FONT_BIG, foreground="#000")
         self.lbl_seq.grid(row=1, column=0, sticky="w")
 
-        ttk.Label(info, text="参考阻值", font=FONT_UI).grid(row=0, column=1,
-                                                           sticky="w", padx=(18, 0))
+        ttk.Label(info, text="参考阻值", font=FONT_UI).grid(
+            row=0, column=1, sticky="w", padx=(18, 0)
+        )
         self.lbl_ref = ttk.Label(info, text="—", font=FONT_BIG, foreground="#0a6")
         self.lbl_ref.grid(row=1, column=1, sticky="w", padx=(18, 0))
 
-        ttk.Label(info, text="实测阻值(Ω)", font=FONT_UI).grid(row=2, column=0,
-                                                              sticky="w", pady=(8, 0))
+        ttk.Label(info, text="实测阻值(Ω)", font=FONT_UI).grid(
+            row=2, column=0, sticky="w", pady=(8, 0)
+        )
         f = ttk.Frame(info)
         f.grid(row=3, column=0, columnspan=2, sticky="w", pady=(2, 0))
         self.var_measured = tk.StringVar()
@@ -151,12 +158,13 @@ class OhmmeterApp(tk.Tk):
         ttk.Button(f, text="填入", command=self._fill_measured).pack(side="left", padx=(5, 0))
         ttk.Button(f, text="清除本脚", command=self._clear_one).pack(side="left", padx=(5, 0))
 
-        ttk.Label(info, text="容差 ±%", font=FONT_UI).grid(row=2, column=1,
-                                                           sticky="w", padx=(18, 0))
+        ttk.Label(info, text="容差 ±%", font=FONT_UI).grid(
+            row=2, column=1, sticky="w", padx=(18, 0)
+        )
         self.var_tol = tk.IntVar(value=30)
-        ttk.Spinbox(info, from_=1, to=200, textvariable=self.var_tol, width=6,
-                    command=self._rejudge).grid(row=3, column=1, sticky="w",
-                                                padx=(18, 0), pady=(2, 0))
+        ttk.Spinbox(
+            info, from_=1, to=200, textvariable=self.var_tol, width=6, command=self._rejudge
+        ).grid(row=3, column=1, sticky="w", padx=(18, 0), pady=(2, 0))
 
         self.lbl_result = ttk.Label(info, text="—", font=("Microsoft YaHei UI", 20, "bold"))
         self.lbl_result.grid(row=4, column=0, columnspan=2, sticky="w", pady=(10, 0))
@@ -166,33 +174,39 @@ class OhmmeterApp(tk.Tk):
         # 按钮
         btns = ttk.Frame(right, padding=(0, 8, 0, 0))
         btns.pack(fill="x")
-        ttk.Button(btns, text="◀ 上一脚",
-                   command=lambda: self._step(-1)).pack(side="left")
-        ttk.Button(btns, text="下一脚 ▶",
-                   command=lambda: self._step(1)).pack(side="left", padx=(4, 0))
-        ttk.Button(btns, text="填入并跳到下一脚",
-                   command=self._fill_and_next).pack(side="left", padx=(4, 0))
+        ttk.Button(btns, text="◀ 上一脚", command=lambda: self._step(-1)).pack(side="left")
+        ttk.Button(btns, text="下一脚 ▶", command=lambda: self._step(1)).pack(
+            side="left", padx=(4, 0)
+        )
+        ttk.Button(btns, text="填入并跳到下一脚", command=self._fill_and_next).pack(
+            side="left", padx=(4, 0)
+        )
 
         btns2 = ttk.Frame(right, padding=(0, 6, 0, 0))
         btns2.pack(fill="x")
         ttk.Button(btns2, text="保存记录", command=self._save).pack(side="left")
         ttk.Button(btns2, text="导出CSV", command=self._export).pack(side="left", padx=(4, 0))
-        ttk.Button(btns2, text="清除全部记录",
-                   command=self._clear_all).pack(side="left", padx=(4, 0))
+        ttk.Button(btns2, text="清除全部记录", command=self._clear_all).pack(
+            side="left", padx=(4, 0)
+        )
 
         btns3 = ttk.Frame(right, padding=(0, 6, 0, 0))
         btns3.pack(fill="x")
-        ttk.Button(btns3, text="生成演示数据（无硬件时预览标红效果）",
-                   command=self._demo_fill).pack(side="left")
+        ttk.Button(
+            btns3, text="生成演示数据（无硬件时预览标红效果）", command=self._demo_fill
+        ).pack(side="left")
 
         # 结果表
-        self.tree = ttk.Treeview(right, columns=("seq", "ref", "mea", "res", "msg"),
-                                 show="headings", height=14)
-        for col, text, w, anchor in [("seq", "序号", 54, "center"),
-                                     ("ref", "参考", 76, "e"),
-                                     ("mea", "实测", 76, "e"),
-                                     ("res", "结果", 62, "center"),
-                                     ("msg", "说明", 176, "w")]:
+        self.tree = ttk.Treeview(
+            right, columns=("seq", "ref", "mea", "res", "msg"), show="headings", height=14
+        )
+        for col, text, w, anchor in [
+            ("seq", "序号", 54, "center"),
+            ("ref", "参考", 76, "e"),
+            ("mea", "实测", 76, "e"),
+            ("res", "结果", 62, "center"),
+            ("msg", "说明", 176, "w"),
+        ]:
             self.tree.heading(col, text=text)
             self.tree.column(col, width=w, anchor=anchor)
         self.tree.pack(fill="both", expand=True, pady=(8, 0))
@@ -250,8 +264,9 @@ class OhmmeterApp(tk.Tk):
         for r in t.get_children():
             t.delete(r)
         for i, p in enumerate(self.pads):
-            t.insert("", "end", iid=str(i),
-                     values=(p["seq"], rules.fmt_ohm(p["resistance"]), "", "", ""))
+            t.insert(
+                "", "end", iid=str(i), values=(p["seq"], rules.fmt_ohm(p["resistance"]), "", "", "")
+            )
 
     # ------------------------------------------------------------- 画布
     def _zoom(self, factor: float) -> None:
@@ -275,7 +290,7 @@ class OhmmeterApp(tk.Tk):
     def _on_wheel(self, event) -> None:
         if event.state & 0x0004:  # Ctrl：缩放
             self._zoom(1.15 if event.delta > 0 else 0.87)
-        else:                     # 普通：滚动
+        else:  # 普通：滚动
             self.canvas.yview_scroll(-1 if event.delta > 0 else 1, "units")
 
     def _get_scaled_photo(self):
@@ -321,18 +336,19 @@ class OhmmeterApp(tk.Tk):
                 x2 = x1 + 4 * s
             if y2 <= y1:
                 y2 = y1 + 4 * s
-            rect = c.create_rectangle(
-                x1, y1, x2, y2, width=1.4, outline=COL_EDGE)
-            c.tag_bind(rect, "<Button-1>",
-                       lambda e, k=i: self._select_index(k))
+            rect = c.create_rectangle(x1, y1, x2, y2, width=1.4, outline=COL_EDGE)
+            c.tag_bind(rect, "<Button-1>", lambda e, k=i: self._select_index(k))
             self.rects[i] = rect
 
             if (x2 - x1) >= 15 and p["seq"] is not None:
-                tid = c.create_text((x1 + x2) / 2, (y1 + y2) / 2,
-                                    text=str(p["seq"]), fill="#1b1f27",
-                                    font=("Arial", max(6, int(8 * min(s, 1.6)))))
-                c.tag_bind(tid, "<Button-1>",
-                           lambda e, k=i: self._select_index(k))
+                tid = c.create_text(
+                    (x1 + x2) / 2,
+                    (y1 + y2) / 2,
+                    text=str(p["seq"]),
+                    fill="#1b1f27",
+                    font=("Arial", max(6, int(8 * min(s, 1.6)))),
+                )
+                c.tag_bind(tid, "<Button-1>", lambda e, k=i: self._select_index(k))
                 self.texts[i] = tid
 
         self._update_colors()
@@ -384,8 +400,7 @@ class OhmmeterApp(tk.Tk):
         self._select_tree_row(i)
         self._scroll_to(i)
         p = self.pads[i]
-        self.var_measured.set("" if p["seq"] not in self.measured
-                              else str(self.measured[p["seq"]]))
+        self.var_measured.set("" if p["seq"] not in self.measured else str(self.measured[p["seq"]]))
 
     def _step(self, delta: int) -> None:
         if not self.pads:
@@ -495,6 +510,7 @@ class OhmmeterApp(tk.Tk):
     def _demo_fill(self) -> None:
         """无硬件时生成演示数据：大部分合格，少部分故意跑偏以便预览标红。"""
         import random
+
         if not self.pads:
             return
         for i, p in enumerate(self.pads):
@@ -507,8 +523,11 @@ class OhmmeterApp(tk.Tk):
             elif ref >= rules.OPEN_REFERENCE:
                 value = ref if roll < 0.75 else random.randint(0, 800)
             else:
-                value = int(ref * random.uniform(0.9, 1.1)) if roll < 0.75 \
+                value = (
+                    int(ref * random.uniform(0.9, 1.1))
+                    if roll < 0.75
                     else int(ref * random.choice([0.3, 1.8, 2.6]))
+                )
             seq = p["seq"]
             self.measured[seq] = value
             self._judge_one(i)
@@ -530,14 +549,17 @@ class OhmmeterApp(tk.Tk):
         tag = ""
         if res:
             tag = res[0] if res[0] in ("PASS", "FAIL", "NOREF") else ""
-        self.tree.item(iid, values=(
-            seq,
-            rules.fmt_ohm(ref),
-            "—" if mea is None else f"{mea}",
-            "" if not res else {"PASS": "合格", "FAIL": "标红",
-                                "NOREF": "无参考"}[res[0]],
-            "" if not res else res[1],
-        ), tags=(tag,) if tag else ())
+        self.tree.item(
+            iid,
+            values=(
+                seq,
+                rules.fmt_ohm(ref),
+                "—" if mea is None else f"{mea}",
+                "" if not res else {"PASS": "合格", "FAIL": "标红", "NOREF": "无参考"}[res[0]],
+                "" if not res else res[1],
+            ),
+            tags=(tag,) if tag else (),
+        )
 
     def _update_info(self) -> None:
         if not self.pads or self.current < 0:
@@ -558,10 +580,8 @@ class OhmmeterApp(tk.Tk):
             self.lbl_detail.configure(text="输入实测阻值后点「填入」")
         else:
             kind, msg = res
-            color = {"PASS": "#0a8a2a", "FAIL": "#d0021b",
-                     "NOREF": "#8a8f98"}[kind]
-            text = {"PASS": "合格 PASS", "FAIL": "标红 FAIL",
-                    "NOREF": "无参考"}[kind]
+            color = {"PASS": "#0a8a2a", "FAIL": "#d0021b", "NOREF": "#8a8f98"}[kind]
+            text = {"PASS": "合格 PASS", "FAIL": "标红 FAIL", "NOREF": "无参考"}[kind]
             self.lbl_result.configure(text=text, foreground=color)
             self.lbl_detail.configure(text=msg)
 
@@ -581,14 +601,13 @@ class OhmmeterApp(tk.Tk):
     def _open_image(self) -> None:
         if not HAS_PIL:
             messagebox.showwarning(
-                "缺少组件",
-                "还没有安装 Pillow 图片库。\n"
-                "请在命令行运行：pip install Pillow")
+                "缺少组件", "还没有安装 Pillow 图片库。\n请在命令行运行：pip install Pillow"
+            )
             return
         path = filedialog.askopenfilename(
             title="选择点位图",
-            filetypes=[("图片", "*.jpg *.jpeg *.png *.bmp *.webp"),
-                       ("所有文件", "*.*")])
+            filetypes=[("图片", "*.jpg *.jpeg *.png *.bmp *.webp"), ("所有文件", "*.*")],
+        )
         if not path:
             return
         try:
@@ -609,15 +628,16 @@ class OhmmeterApp(tk.Tk):
             if seq not in self.measured:
                 continue
             res = self.results.get(seq, ("", ""))
-            out.append({
-                "序号": seq,
-                "参考阻值": p["resistance"],
-                "实测阻值": self.measured[seq],
-                "判定": {"PASS": "合格", "FAIL": "标红", "NOREF": "无参考"}.get(
-                    res[0], ""),
-                "说明": res[1],
-                "型号": self.model,
-            })
+            out.append(
+                {
+                    "序号": seq,
+                    "参考阻值": p["resistance"],
+                    "实测阻值": self.measured[seq],
+                    "判定": {"PASS": "合格", "FAIL": "标红", "NOREF": "无参考"}.get(res[0], ""),
+                    "说明": res[1],
+                    "型号": self.model,
+                }
+            )
         return out
 
     def _save(self) -> None:
@@ -647,7 +667,8 @@ class OhmmeterApp(tk.Tk):
             title="导出测量结果",
             defaultextension=".csv",
             initialfile=f"{self.model}_测量结果.csv",
-            filetypes=[("CSV 表格", "*.csv"), ("所有文件", "*.*")])
+            filetypes=[("CSV 表格", "*.csv"), ("所有文件", "*.*")],
+        )
         if not path:
             return
         with open(path, "w", newline="", encoding="utf-8-sig") as f:

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """图形界面主程序（Tkinter，Python 自带，无需安装）。"""
+
 from __future__ import annotations
 
 import queue
@@ -53,7 +54,9 @@ class App(tk.Tk):
         ttk.Button(toolbar, text="全不选", command=lambda: self._set_all(False)).pack(
             side="left", padx=(4, 0)
         )
-        ttk.Button(toolbar, text="设置参数", command=self._edit_params).pack(side="left", padx=(4, 0))
+        ttk.Button(toolbar, text="设置参数", command=self._edit_params).pack(
+            side="left", padx=(4, 0)
+        )
 
         self.btn_run = ttk.Button(toolbar, text="▶ 开始测试", command=self._start)
         self.btn_run.pack(side="left", padx=(14, 0))
@@ -97,8 +100,7 @@ class App(tk.Tk):
             self.tree_result.tag_configure(status_value, foreground=color)
 
         ttk.Label(right, text="运行日志", font=("Microsoft YaHei UI", 10, "bold")).pack(anchor="w")
-        self.txt_log = tk.Text(right, height=8, wrap="none", state="disabled",
-                               font=("Consolas", 9))
+        self.txt_log = tk.Text(right, height=8, wrap="none", state="disabled", font=("Consolas", 9))
         self.txt_log.pack(fill="both", expand=True)
 
         self.status = ttk.Label(self, text="就绪", anchor="w", relief="sunken", padding=(6, 3))
@@ -212,7 +214,8 @@ class App(tk.Tk):
             _, item, result, elapsed = evt
             self.results.append((item, result, elapsed))
             self.tree_result.insert(
-                "", "end",
+                "",
+                "end",
                 values=(item.title, result.status.value, result.message, f"{elapsed:.2f}s"),
                 tags=(result.status.value,),
             )

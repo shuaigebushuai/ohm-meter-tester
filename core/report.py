@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """结果导出：CSV 报告 + 文本日志。"""
+
 from __future__ import annotations
 
 import csv
@@ -22,14 +23,16 @@ def export_csv(path: str, rows: List[Tuple[TestItem, TestResult, float]]) -> Non
         writer = csv.writer(f)
         writer.writerow(["测试项", "状态", "信息", "实测值", "耗时(秒)", "记录时间"])
         for item, result, elapsed in rows:
-            writer.writerow([
-                item.title,
-                result.status.value,
-                result.message,
-                "" if result.value is None else result.value,
-                f"{elapsed:.2f}",
-                stamp,
-            ])
+            writer.writerow(
+                [
+                    item.title,
+                    result.status.value,
+                    result.message,
+                    "" if result.value is None else result.value,
+                    f"{elapsed:.2f}",
+                    stamp,
+                ]
+            )
 
 
 def export_log(path: str, lines: List[str]) -> None:

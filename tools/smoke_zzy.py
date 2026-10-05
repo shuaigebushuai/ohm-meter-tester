@@ -3,6 +3,7 @@
 
 用法：python tools/smoke_zzy.py
 """
+
 from __future__ import annotations
 
 import sys
@@ -36,8 +37,16 @@ def main() -> None:
 
     # 判定规则自检
     print("4) 判定规则自检:")
-    for ref, mea in [(3249, 3249), (3249, 100), (0, 0), (0, 500),
-                     (500, 520), (500, 100), (None, 100), (500, None)]:
+    for ref, mea in [
+        (3249, 3249),
+        (3249, 100),
+        (0, 0),
+        (0, 500),
+        (500, 520),
+        (500, 100),
+        (None, 100),
+        (500, None),
+    ]:
         j = rules.judge(ref, mea, 30)
         print(f"   参考={ref} 实测={mea} -> {j.result:6} {j.message}")
 
@@ -45,8 +54,7 @@ def main() -> None:
     app._select_index(0)
     app.var_measured.set("520")
     app._fill_measured()
-    print("5) 第 1 脚填 520 后判定:",
-          app.results.get(app.pads[0]["seq"]))
+    print("5) 第 1 脚填 520 后判定:", app.results.get(app.pads[0]["seq"]))
 
     app._demo_fill()
     counts = Counter(v[0] for v in app.results.values())
@@ -59,19 +67,23 @@ def main() -> None:
     app._step(1)
     app._step(-1)
     app.update_idletasks()
-    print("7) 缩放、拟合、前后切换均正常。当前脚位序号:",
-          app.pads[app.current]["seq"])
+    print("7) 缩放、拟合、前后切换均正常。当前脚位序号:", app.pads[app.current]["seq"])
 
     rows = app._rows_ready()
     print(f"8) 待保存/导出行数: {len(rows)}")
     assert rows
 
     # 保存入库
-    saved = db.save_measurement(app.conn, source="测试", model=model,
-                                seq=rows[0]["序号"],
-                                reference=rows[0]["参考阻值"],
-                                measured=rows[0]["实测阻值"],
-                                result=rows[0]["判定"], note="smoke")
+    saved = db.save_measurement(
+        app.conn,
+        source="测试",
+        model=model,
+        seq=rows[0]["序号"],
+        reference=rows[0]["参考阻值"],
+        measured=rows[0]["实测阻值"],
+        result=rows[0]["判定"],
+        note="smoke",
+    )
     print(f"   写入 measurements，id={saved}")
     app.conn.execute("DELETE FROM measurements WHERE note='smoke'")
     app.conn.commit()

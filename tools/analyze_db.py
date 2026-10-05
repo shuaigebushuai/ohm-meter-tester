@@ -5,6 +5,7 @@
     python tools/analyze_db.py <accdb路径> [型号关键字]
 密码通过环境变量 ACCDB_PWD 传入。
 """
+
 from __future__ import annotations
 
 import os
@@ -33,9 +34,7 @@ def main() -> None:
 
     conn = connect(path)
     cur = conn.cursor()
-    cur.execute(
-        "SELECT 编号,序号,阻值,具体型号,芯片方位,a,b,c,d,e,f FROM Database1"
-    )
+    cur.execute("SELECT 编号,序号,阻值,具体型号,芯片方位,a,b,c,d,e,f FROM Database1")
     rows = [tuple(r) for r in cur.fetchall()]
     print(f"总行数: {len(rows)}")
 
@@ -61,9 +60,13 @@ def main() -> None:
     print(f"\n===== 模型明细: {target} =====")
     sub = [r for r in rows if r[3] == target]
     sub.sort(key=lambda r: r[1])
-    print(f"{'序号':>5} {'阻值':>7} {'方位':>6}  {'a':>5} {'b':>5} {'c':>5} {'d':>5} {'e':>4} {'f':>4}")
+    print(
+        f"{'序号':>5} {'阻值':>7} {'方位':>6}  {'a':>5} {'b':>5} {'c':>5} {'d':>5} {'e':>4} {'f':>4}"
+    )
     for r in sub[:80]:
-        print(f"{r[1]:>5} {str(r[2]):>7} {str(r[4]):>6}  {str(r[5]):>5} {str(r[6]):>5} {str(r[7]):>5} {str(r[8]):>5} {str(r[9]):>4} {str(r[10]):>4}")
+        print(
+            f"{r[1]:>5} {str(r[2]):>7} {str(r[4]):>6}  {str(r[5]):>5} {str(r[6]):>5} {str(r[7]):>5} {str(r[8]):>5} {str(r[9]):>4} {str(r[10]):>4}"
+        )
     if len(sub) > 80:
         print(f"  ... 共 {len(sub)} 行")
 
